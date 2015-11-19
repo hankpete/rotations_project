@@ -5,10 +5,12 @@
 # 
 # 11/18/2015
 
-import numpy as np
-from sympy import Symbol, solve 
-import matplotlib.pyplot as plt
+# these all need to be installed. the urls are here:
+import numpy as np 					# http://www.scipy.org/scipylib/download.html
+from sympy import Symbol, solve 	# http://www.sympy.org/en/download.html
+import matplotlib.pyplot as plt 	# http://matplotlib.org/downloads.html
 
+# set up the two curves - these can be changed manually
 def function_a(x, derivative):
 	if derivative:
 		return (2)
@@ -21,15 +23,13 @@ def function_b(x, derivative):
 	else:
 		return (x)
 
-xvals = np.arange(0, 2, .1)
-a_yvals = []
-b_yvals = []
+# set up original curves
+xvals = np.linspace(0, 2, 100)
+a_yvals = function_a(xvals, derivative=False)
+b_yvals = function_b(xvals, derivative=False)
 
-for i in xvals:
-	a_yvals.append(function_a(i, derivative=False))
-	b_yvals.append(function_b(i, derivative=False))
-
-
+# take each point on curve B, make perpendicular line to it, find point on curve A 
+# that it intersects, draw a circle with this point around B:
 for i in range(len(xvals)):
 
 	b_x = xvals[i]
@@ -51,6 +51,6 @@ for i in range(len(xvals)):
 
 plt.plot(xvals, a_yvals, "b-")
 plt.plot(xvals, b_yvals, "r-")
-plt.xlim(-1, 4)
-plt.ylim(-1, 4)
+plt.xlim(0, 2)
+plt.ylim(0, 2)
 plt.show()
