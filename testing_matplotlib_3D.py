@@ -5,14 +5,15 @@ import numpy as np
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
 
-x = np.linspace(-1, 1, 100)
-y = np.sqrt(1 - x**2)
-z = np.sqrt(1 - x**2)
+x = np.linspace(-2, 2, 100)
+y = x**2
 
-print x
-print y
-print z
+X, Y = np.meshgrid(x, y)
+z = x
 
-ax.plot_surface(x, y, z, color='r')
+ax.set_xlabel('X')
+ax.set_ylabel('Y')
+ax.set_zlabel('Z')
+ax.scatter(x, y, z)
 
 plt.show()
