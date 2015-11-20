@@ -5,21 +5,18 @@
 # 
 # 11/18/2015
 
-# some of these need to be installed. the urls are here:
-import numpy as np 					# http://www.scipy.org/scipylib/download.html
-from sympy import Symbol, solve 	# http://www.sympy.org/en/download.html
-import matplotlib.pyplot as plt 	# http://matplotlib.org/downloads.html
-from mpl_toolkits.mplot3d import Axes3D
+# some of these need to be installed appart from regular python installation. the urls are here:
+import numpy as np 								# http://www.scipy.org/scipylib/download.html
+from sympy import Symbol, solve 				# http://www.sympy.org/en/download.html
+import matplotlib.pyplot as plt 				# http://matplotlib.org/downloads.html
+from mpl_toolkits.mplot3d import Axes3D			# part of ^this one
 
 # set up the two curves - these can be changed manually
-def function_a(x, derivative):
-	if derivative:
-		return (2)
-	else:
-		return (2*x + 1)
+def function_a(x):
+	return x + 1
 
 def function_b(x, derivative):
-	if derivative:
+	if derivative:		# need this for when we make perpendicular lines
 		return (1)
 	else:
 		return (x)
@@ -29,7 +26,7 @@ MIN = 0
 MAX = 2
 STEP = 10
 xvals = np.linspace(MIN, MAX, STEP)
-a_yvals = function_a(xvals, derivative=False)
+a_yvals = function_a(xvals)
 b_yvals = function_b(xvals, derivative=False)
 
 # plot what we have so far and set up for the rest
@@ -54,11 +51,11 @@ for i in range(len(xvals)):
 	
 	# find which point on curve A lies on the line corresponding to above slope and point
 	x = Symbol('x')		# sympy's "Symbol" makes x a variable
-	a_x = solve((slope*(x - b_x) + b_y) - function_a(x, derivative=False), x)	# sympy's "solve" sets expression to zero
+	a_x = solve((slope*(x - b_x) + b_y) - function_a(x), x)	# sympy's "solve" sets expression to zero
 	a_x = a_x[0]
 	if a_x < MIN or a_x > MAX:
 		continue
-	a_y = function_a(a_x, derivative=False)
+	a_y = function_a(a_x)
 
 	# radius of circle is dist btwn point on line A and point on line B
 	delta_x = float(b_x-a_x)
@@ -75,9 +72,11 @@ for i in range(len(xvals)):
 		# used distance formula and pythagorean theorem to find z
 		magnitude = np.sqrt(float(.5*((2*radius)**2 - (circle_ys[i]-circle_ys[0])**2 - \
 			(circle_ys[i]-circle_ys[len(circle_ys)-1])**2 - (circle_xs[i]-circle_xs[0])**2 - (circle_xs[i]-circle_xs[len(circle_xs)-1])**2)))
+		# bottom and top of circle
 		circle_zs.append(magnitude)
 		circle_zs.append(-magnitude)
 
+	# double all the points on the x and y axes to account for top and bottom of circle
 	circle_xs = np.repeat(circle_xs, 2)
 	circle_ys = np.repeat(circle_ys, 2)
 
