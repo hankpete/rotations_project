@@ -15,13 +15,13 @@ from patches_rotation_funcs import *			# own library
 
 # set up the two curves - these can be changed manually
 def function_a(x):
-	return (x+1)
+	return (x)
 
 def function_b(x, derivative):
 	if derivative:		# need this for when we make perpendicular lines
-		return (1)
+		return (2*x)
 	else:
-		return (x)
+		return (x**2)
 
 # set up original curves
 MIN = -2
@@ -68,37 +68,37 @@ for i in range(len(xvals)):
 	delta_y = np.abs(float(b_y-a_y))
 	radius = np.sqrt((delta_x)**2 + (delta_y)**2)
 
-	circle = Circle((b_x, b_y), radius=radius)
-	ax.add_patch(circle)
-	#guess =
-	if b_x > 1:
-		pathpatch_2d_to_3d(circle, z=0, normal=((b_x-1), function_b(b_x-1, derivative=False), 0))
-	else:
-		pathpatch_2d_to_3d(circle, z=0, normal=((b_x-1), function_b(b_x-1, derivative=False), 0))
-	pathpatch_translate(circle, b_x)
+	# circle = Circle((b_x, b_y), radius=radius)
+	# ax.add_patch(circle)
+	# #guess =
+	# if b_x > 1:
+	# 	pathpatch_2d_to_3d(circle, z=0, normal=((b_x-1), function_b(b_x-1, derivative=False), 0))
+	# else:
+	# 	pathpatch_2d_to_3d(circle, z=0, normal=((b_x-1), function_b(b_x-1, derivative=False), 0))
+	# pathpatch_translate(circle, b_x)
 
 
-	# #make a line segment on xy plane that is circle's diameter
-	# circle_xs = np.linspace(b_x-delta_x, b_x+delta_x, 100) 
-	# circle_ys = slope*(circle_xs - b_x) + b_y
+	#make a line segment on xy plane that is circle's diameter
+	circle_xs = np.linspace(b_x-delta_x, b_x+delta_x, 100) 
+	circle_ys = slope*(circle_xs - b_x) + b_y
 
-	# # z points are a function of x and y, make a circle
-	# circle_zs = []
-	# for i in range(len(circle_xs)):
-	# 	# used distance formula and pythagorean theorem to find z
-	# 	magnitude = np.sqrt(float(.5*((2*radius)**2 - (circle_ys[i]-circle_ys[0])**2 - \
-	# 		(circle_ys[i]-circle_ys[len(circle_ys)-1])**2 - (circle_xs[i]-circle_xs[0])**2 - (circle_xs[i]-circle_xs[len(circle_xs)-1])**2)))
-	# 	# bottom and top of circle
-	# 	circle_zs.append(magnitude)
-	# 	circle_zs.append(-magnitude)
+	# z points are a function of x and y, make a circle
+	circle_zs = []
+	for i in range(len(circle_xs)):
+		# used distance formula and pythagorean theorem to find z
+		magnitude = np.sqrt(float(.5*((2*radius)**2 - (circle_ys[i]-circle_ys[0])**2 - \
+			(circle_ys[i]-circle_ys[len(circle_ys)-1])**2 - (circle_xs[i]-circle_xs[0])**2 - (circle_xs[i]-circle_xs[len(circle_xs)-1])**2)))
+		# bottom and top of circle
+		circle_zs.append(magnitude)
+		circle_zs.append(-magnitude)
 
-	# # double all the points on the x and y axes to account for top and bottom of circle
-	# circle_xs = np.repeat(circle_xs, 2)
-	# circle_ys = np.repeat(circle_ys, 2)
+	# double all the points on the x and y axes to account for top and bottom of circle
+	circle_xs = np.repeat(circle_xs, 2)
+	circle_ys = np.repeat(circle_ys, 2)
 
-	# # plot this particular circle and do the next one
-	# ax.plot(circle_xs, circle_ys, circle_zs, c='g')
-	# #ax.scatter(circle_xs, circle_ys, circle_zs, c="g")
+	# plot this particular circle and do the next one
+	ax.plot(circle_xs, circle_ys, circle_zs, c='g')
+	#ax.scatter(circle_xs, circle_ys, circle_zs, c="g")
 
 # make sure it's not distorted
 diff = 1.5*MAX - 1.5*MIN
