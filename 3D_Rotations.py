@@ -14,17 +14,17 @@ from mpl_toolkits.mplot3d import Axes3D			# also part of that one
 from patches_rotation_funcs import *			# own library
 
 # set up the two curves - these can be changed manually
-def function_a(x):
+def function_a(x):		#blue curve
 	return (x)
 
-def function_b(x, derivative):
+def function_b(x, derivative):		#red curve
 	if derivative:		# need this for when we make perpendicular lines
 		return (2*x)
 	else:
 		return (x**2)
 
 # set up original curves
-MIN = -2
+MIN = -.5
 MAX = 2
 NUM = 100
 xvals = np.linspace(MIN, MAX, NUM)
@@ -58,6 +58,16 @@ for i in range(len(xvals)):
 	# find which point on curve A lies on the line corresponding to above slope and point
 	x = Symbol('x')		# sympy's "Symbol" makes x a variable
 	a_x = solve((slope*(x - b_x) + b_y) - function_a(x), x)	# sympy's "solve" sets expression to zero
+	
+	# messing with getting rid of the complex numbers... idk if this is useful at all
+	kill = True
+	for i in a_x:
+		if "I" not in str(i):
+			kill = False
+			a_x[0] = i
+	if kill:
+		continue
+
 	a_x = a_x[0]
 	if a_x < MIN or a_x > MAX:
 		continue
@@ -85,9 +95,9 @@ for i in range(len(xvals)):
 	# z points are a function of x and y, make a circle
 	circle_zs = []
 	for i in range(len(circle_xs)):
-		# used distance formula and pythagorean theorem to find z
-		magnitude = np.sqrt(float(.5*((2*radius)**2 - (circle_ys[i]-circle_ys[0])**2 - \
-			(circle_ys[i]-circle_ys[len(circle_ys)-1])**2 - (circle_xs[i]-circle_xs[0])**2 - (circle_xs[i]-circle_xs[len(circle_xs)-1])**2)))
+		# new magnitude calculation is faster: solve for z in distance formula
+		magnitude = np.sqrt(radius**2 - (circle_xs[i]-b_x)**2 - (circle_ys[i]-b_y)**2)
+
 		# bottom and top of circle
 		circle_zs.append(magnitude)
 		circle_zs.append(-magnitude)
@@ -105,10 +115,6 @@ diff = 1.5*MAX - 1.5*MIN
 ax.set_xlim(1.5*MIN, 1.5*MAX)
 ax.set_ylim(1.5*MIN, 1.5*MAX)
 ax.set_zlim(-diff/2.0, diff/2.0)
-
-# ax.set_xlim(-5,5)
-# ax.set_ylim(-5, 5)
-# ax.set_zlim(-5, 5)
 
 # finish
 plt.show()
