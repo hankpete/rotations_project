@@ -9,22 +9,22 @@
 import numpy as np 								# http://www.scipy.org/scipylib/download.html
 from sympy import Symbol, solve 				# http://www.sympy.org/en/download.html
 import matplotlib.pyplot as plt 				# http://matplotlib.org/downloads.html
-from matplotlib.patches import Circle 			# part of ^this one
+#from matplotlib.patches import Circle 			# part of ^this one
 from mpl_toolkits.mplot3d import Axes3D			# also part of that one
-from patches_rotation_funcs import *			# own library
+#from patches_rotation_funcs import *			# own library
 
 # set up the two curves - these can be changed manually
 def function_a(x):		#blue curve
-	return (x)
+	return (.0001*x)
 
 def function_b(x, derivative):		#red curve
 	if derivative:		# need this for when we make perpendicular lines
 		return (2*x)
 	else:
-		return (x**2)
+		return (x**2 - .5)
 
 # set up original curves
-MIN = -.5
+MIN = -2
 MAX = 2
 NUM = 100
 xvals = np.linspace(MIN, MAX, NUM)
@@ -110,11 +110,21 @@ for i in range(len(xvals)):
 	ax.plot(circle_xs, circle_ys, circle_zs, c='g')
 	#ax.scatter(circle_xs, circle_ys, circle_zs, c="g")
 
-# make sure it's not distorted
-diff = 1.5*MAX - 1.5*MIN
-ax.set_xlim(1.5*MIN, 1.5*MAX)
-ax.set_ylim(1.5*MIN, 1.5*MAX)
-ax.set_zlim(-diff/2.0, diff/2.0)
+### make sure it's not distorted
+diff = MAX - MIN + 4	# length of one side of cubic graph
+diff = diff/2.0			# half so we can start from midpoint
+# determine where the middle of the graph is on the y axis 
+a_yvalsMIN = min(a_yvals)
+a_yvalsMAX = max(a_yvals)
+b_yvalsMIN = min(b_yvals)
+b_yvalsMAX = max(b_yvals)
+YMAX = max(a_yvalsMIN, b_yvalsMIN)
+YMIN = min(a_yvalsMAX, b_yvalsMAX)
+ymiddle = YMIN + (YMAX - YMIN)/2.0
+# set the axis limits to be a nice cube
+ax.set_xlim(MIN - 2, MAX + 2)
+ax.set_ylim(ymiddle - diff, ymiddle + diff)
+ax.set_zlim(-diff, diff)
 
 # finish
 plt.show()
