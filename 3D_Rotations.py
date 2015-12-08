@@ -15,19 +15,20 @@ from mpl_toolkits.mplot3d import Axes3D			# also part of that one
 
 # set up the two curves - these can be changed manually
 def function_a(x):		#blue curve - rotated
-	return (x**3- 1)
+	return (x**.5)
 
 def function_b(x, derivative):		#red curve - rotator
 	if derivative:		# need this for when we make perpendicular lines
-		return (2*x)
+		return (0)
 	else:
-		return (x**2)
+		return (5 + 0*x)
 
 # set up original curves
-MIN = -2
+MIN = 0
 MAX = 2
 NUM = 100
 xvals = np.linspace(MIN, MAX, NUM)
+
 a_yvals = function_a(xvals)
 b_yvals = function_b(xvals, derivative=False)
 
@@ -53,8 +54,11 @@ for i in range(len(xvals)):
 
 	# get perpendicular slope to reflection point on curve B 
 	slope = function_b(b_x, derivative=True)
-	slope = slope**(-1)
-	slope = -slope
+	if slope == 0:
+		slope = 1000000		# aproximate vertical line
+	else:
+		slope = slope**(-1)
+		slope = -slope
 
 	# find which point on curve A lies on the line corresponding to above slope and point
 	x = Symbol('x')		# sympy's "Symbol" makes x a variable
@@ -108,7 +112,7 @@ for i in range(len(xvals)):
 		circle_ys = np.repeat(circle_ys, 2)
 
 		# plot this particular circle and do the next one
-		ax.plot(circle_xs, circle_ys, circle_zs, c='g', alpha=.5)
+		ax.plot(circle_xs, circle_ys, circle_zs, c='g', alpha=.25)
 		#ax.scatter(circle_xs, circle_ys, circle_zs, c="g")
 
 ### make sure it's not distorted
