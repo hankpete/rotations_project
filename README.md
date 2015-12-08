@@ -10,9 +10,9 @@ y = x rotated about y = sin(pi*x):
 
 ####Here is what opencv_rotate.py can do so far:
 The original image was a simple curve drawn with MS Paint. Here are its edges found by opencv:
-![Alt text](figure_1.png?raw=true "Edges of Curve")
+![Alt text](figure_3.png?raw=true "Edges of Curve")
 The code then takes those edges and rotates each point on them about a horizontal line slicking through the curve:
-![Alt text](figure_2.png?raw=true "Rotated Curve")
+![Alt text](figure_4.png?raw=true "Rotated Curve")
 
 ####Plans
 The opencv code is still a work in progress and the next step would be to make the rotator line 
