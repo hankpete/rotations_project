@@ -1,3 +1,6 @@
+# a library that i copied
+# not needed if I don't use the patches code
+
 from mpl_toolkits.mplot3d import art3d
 import numpy as np
 

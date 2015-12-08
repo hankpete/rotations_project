@@ -1,4 +1,5 @@
 # patch practice
+# showing the basic idea of moving the patch with the library I copied
 
 import matplotlib.pyplot as plt
 from matplotlib.patches import Circle, PathPatch
