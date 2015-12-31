@@ -1,36 +1,36 @@
-### 3D Rotations ###
-#
-# taking function A and rotating it around function B 
-# using the disc/washer method to plot an array of points
-# 
-# 11/18/2015
 
-# some of0 th1se need to be installed appart from regular python installation. the urls are here:
-import numpy as np 								# http://www.scipy.org/scipylib/download.html
-from sympy import Symbol, solve 				# http://www.sympy.org/en/download.html
-import matplotlib.pyplot as plt 				# http://matplotlib.org/downloads.html
-#from matplotlib.patches import Circle 			# part of ^this one
-from mpl_toolkits.mplot3d import Axes3D			# also part of that one
-#from patches_rotation_funcs import *			# own library
+# coding: utf-8
+
+# In[11]:
+
+# some of th1se need to be installed appart from regular python installation. the urls are here:
+import numpy as np
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+
+
+# In[36]:
 
 # set up the two curves - these can be changed manually
-def function_a(x):		#blue curve - rotated
-	return (x**.5)
+def function_a(x):     #blue curve - rotated
+    y = x**3
+    return (y)
 
-def function_b(x, derivative):		#red curve - rotator
-	if derivative:		# need this for when we make perpendicular lines
-		return (0)
-	else:
-		return (5 + 0*x)
+def function_b(x):     #red curve - rotator
+    y = np.cos(x)
+    return (y)
 
 # set up original curves
-MIN = 0
+MIN = -1
 MAX = 2
-NUM = 100
+NUM = 500
 xvals = np.linspace(MIN, MAX, NUM)
 
 a_yvals = function_a(xvals)
-b_yvals = function_b(xvals, derivative=False)
+b_yvals = function_b(xvals)
+
+
+# In[37]:
 
 # plot what we have so far and set up for the rest
 fig = plt.figure()
@@ -45,79 +45,83 @@ ax.set_zlabel('Z')
 # that it intersects, draw a circle with this point around B:
 for i in range(len(xvals)):
 
-	b_x = xvals[i]
-	b_y = b_yvals[i]
+    b_x = xvals[i]
+    b_y = b_yvals[i]
 
-	# dont make a circle of radius 0...
-	if a_yvals[i] == b_y:
-		continue
+    # dont make a circle of radius 0...
+    if a_yvals[i] == b_y:
+        continue
+    
+    # get perpendicular slope to reflection point on curve B 
+    # use approx of slope 
+    if i>=1:
+        slope = (b_yvals[i]-b_yvals[i-1])/(xvals[i]-xvals[i-1])
+    else:
+        slope = (b_yvals[i]-b_yvals[i+1])/(xvals[i]-xvals[i+1])
+        
+    # perpendicular is neg recip
+    slope = slope**(-1)
+    slope = -slope
+        
+    # find approx where perp_line and rotating line intersect
+    solutions = []
+    # manage very steep lines
+    if slope > 100:
+        solutions.append(function_a(b_x))
+    else:
+        perp_line = slope*(xvals - b_x) + b_y
+        positive = None
+        for i in range(len(xvals)):
+            diff = perp_line[i]-a_yvals[i]
+            old_positive = positive
+            if diff>0:
+                positive = True
+            elif diff==0:
+                solutions.append(x_vals[i])
+            else:
+                positive = False
 
-	# get perpendicular slope to reflection point on curve B 
-	slope = function_b(b_x, derivative=True)
-	if slope == 0:
-		slope = 1000000		# aproximate vertical line
-	else:
-		slope = slope**(-1)
-		slope = -slope
+            if old_positive != None:
+                if old_positive != positive:
+                    solutions.append(xvals[i])
 
-	# find which point on curve A lies on the line corresponding to above slope and point
-	x = Symbol('x')		# sympy's "Symbol" makes x a variable
-	a_x = solve((slope*(x - b_x) + b_y) - function_a(x), x)	# sympy's "solve" sets expression to zero
+    # make a circle for every solution instead of just the first one it finds
+    for a_x in solutions:
+        if a_x < MIN or a_x > MAX:
+            continue
+        a_y = function_a(a_x)
 
-	# get rid of complex numbers 
-	new = []
-	for i in a_x:
-		if 'I' not in str(i):
-			new.append(i)
-
-	# make a circle for every solution instead of just the first one it finds
-	for a_x in new:
-		if a_x < MIN or a_x > MAX:
-			continue
-		a_y = function_a(a_x)
-
-		# radius of circle is dist btwn point on line A and point on line B
-		delta_x = np.abs(float(b_x-a_x))
-		delta_y = np.abs(float(b_y-a_y))
-		radius = np.sqrt((delta_x)**2 + (delta_y)**2)
-
-		# # how i would use the circle pannels if they worked
-		# circle = Circle((b_x, b_y), radius=radius)
-		# ax.add_patch(circle)
-		# #guess =
-		# # something is weird - the circles break off at 1....
-		# if b_x > 1:
-		# 	pathpatch_2d_to_3d(circle, z=0, normal=((b_x-1), function_b(b_x-1, derivative=False), 0))
-		# else:
-		# 	pathpatch_2d_to_3d(circle, z=0, normal=((b_x-1), function_b(b_x-1, derivative=False), 0))
-		# pathpatch_translate(circle, b_x)
+        # radius of circle is dist btwn point on line A and point on line B
+        delta_x = np.abs(float(b_x-a_x))
+        delta_y = np.abs(float(b_y-a_y))
+        radius = np.sqrt((delta_x)**2 + (delta_y)**2)
 
 
-		# make a line segment on xy plane that is circle's diameter
-		circle_xs = np.linspace(b_x-delta_x, b_x+delta_x, 100) 
-		circle_ys = slope*(circle_xs - b_x) + b_y
+        # make a line segment on xy plane that is circle's diameter
+        circle_xs = np.linspace(b_x-delta_x, b_x+delta_x, 100) 
+        circle_ys = slope*(circle_xs - b_x) + b_y
 
-		# z points are a function of x and y, make a circle
-		circle_zs = []
-		for i in range(len(circle_xs)):
-			# new magnitude calculation is faster: solve for z in distance formula
-			magnitude = np.sqrt(radius**2 - (circle_xs[i]-b_x)**2 - (circle_ys[i]-b_y)**2)
+        # z points are a function of x and y, make a circle
+        circle_zs = []
+        for i in range(len(circle_xs)):
+            # new magnitude calculation is faster: solve for z in distance formula
+            magnitude = np.sqrt(radius**2 - (circle_xs[i]-b_x)**2 - (circle_ys[i]-b_y)**2)
 
-			# bottom and top of circle
-			circle_zs.append(magnitude)
-			circle_zs.append(-magnitude)
+            # bottom and top of circle
+            circle_zs.append(magnitude)
+            circle_zs.append(-magnitude)
 
-		# double all the points on the x and y axes to account for top and bottom of circle
-		circle_xs = np.repeat(circle_xs, 2)
-		circle_ys = np.repeat(circle_ys, 2)
+        # double all the points on the x and y axes to account for top and bottom of circle
+        circle_xs = np.repeat(circle_xs, 2)
+        circle_ys = np.repeat(circle_ys, 2)
 
-		# plot this particular circle and do the next one
-		ax.plot(circle_xs, circle_ys, circle_zs, c='g', alpha=.25)
-		#ax.scatter(circle_xs, circle_ys, circle_zs, c="g")
+        # plot this particular circle and do the next one
+        ax.plot(circle_xs, circle_ys, circle_zs, c='g', alpha=.1)
+        #ax.scatter(circle_xs, circle_ys, circle_zs, c="g")
 
 ### make sure it's not distorted
-diff = MAX - MIN + 4	# length of one side of cubic graph
-diff = diff/2.0			# half so we can start from midpoint
+diff = MAX - MIN + 4    # length of one side of cubic graph
+diff = diff/2.0         # half so we can start from midpoint
 # determine where the middle of the graph is on the y axis 
 a_yvalsMIN = min(a_yvals)
 a_yvalsMAX = max(a_yvals)
@@ -133,3 +137,9 @@ ax.set_zlim(-diff, diff)
 
 # finish
 plt.show()
+
+
+# In[ ]:
+
+
+
