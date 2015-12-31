@@ -1,15 +1,9 @@
 
-# coding: utf-8
-
-# In[11]:
-
 # some of th1se need to be installed appart from regular python installation. the urls are here:
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
-
-# In[36]:
 
 # set up the two curves - these can be changed manually
 def function_a(x):     #blue curve - rotated
@@ -30,8 +24,6 @@ a_yvals = function_a(xvals)
 b_yvals = function_b(xvals)
 
 
-# In[37]:
-
 # plot what we have so far and set up for the rest
 fig = plt.figure()
 ax = fig.gca(projection='3d')
@@ -40,6 +32,7 @@ ax.plot(xvals, b_yvals, "r-", alpha=1.0)
 ax.set_xlabel('X')
 ax.set_ylabel('Y')
 ax.set_zlabel('Z')
+
 
 # take each point on curve B, make perpendicular line to it, find point on curve A 
 # that it intersects, draw a circle with this point around B:
@@ -137,9 +130,3 @@ ax.set_zlim(-diff, diff)
 
 # finish
 plt.show()
-
-
-# In[ ]:
-
-
-
