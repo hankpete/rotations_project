@@ -4,11 +4,14 @@
 
 ####Here are some examples of 3D_Rotations.py outputs:
 
-y = x rotated about y = x^2:
-![Alt text](figure_1.png?raw=true "y = x rotated about y = x^2")
+y = x^2 rotated about the x-axis:
+![Alt text](figure_1.png?raw=true)
 
-y = x rotated about y = sin(pi*x):
-![Alt text](figure_2.png?raw=true "y = x rotated about y = sin(pi*x)")
+y = x^3 rotated about y = x^2:
+![Alt text](figure_2.png?raw=true)
+
+y = sin(5x) rotated about y = 3x^2 -1:
+![Alt text](figure_5.png?raw=true)
 
 ####Here is what opencv_rotate.py can do so far:
 
